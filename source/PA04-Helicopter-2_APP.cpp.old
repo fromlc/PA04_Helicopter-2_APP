@@ -1,0 +1,79 @@
+//------------------------------------------------------------------------------
+// PA02-Helicopter-1.cpp : app code for helicopter flight
+//------------------------------------------------------------------------------
+
+#include "Helicopter.h"
+
+#include <iostream>
+
+//------------------------------------------------------------------------------
+// using symbols
+//------------------------------------------------------------------------------
+using std::cin;
+using std::cout;
+
+constexpr int DISTANCE = 100;
+
+void doUp(Helicopter&, int);
+
+//------------------------------------------------------------------------------
+// entry point
+//------------------------------------------------------------------------------
+int main() {
+
+    Helicopter h;
+
+    // input loop - u, d, f, x, q commands
+    while (true) {
+        // get command
+        cout << "Command? ";
+        char cmd;
+        cin >> cmd;
+        cmd = tolower(cmd);
+
+        // up command
+        if (cmd == 'u') {
+            doUp(h, DISTANCE);
+        }
+        else if (cmd == 'd') {
+            h.goDown(DISTANCE);
+            cout << "went down\n";
+        }
+        else if (cmd == 'f') {
+            h.goForward(DISTANCE);
+            cout << "went forward\n";
+        }
+        else if (cmd == 'x') {
+            h.goLand();
+            cout << "landed OK!\n";
+        }
+        else if (cmd == 'q')
+            break;
+
+    }
+    cout << "Goodbye!\n";
+}
+
+//------------------------------------------------------------------------------
+// make helicopter go up
+//------------------------------------------------------------------------------
+void doUp(Helicopter& hh, int distance) {
+    hh.goUp(distance);
+    cout << "went up\n";
+    cout << "altitude is now " << hh.getYPos() << " \n";
+}
+
+//------------------------------------------------------------------------------
+// make helicopter land
+//------------------------------------------------------------------------------
+void doLand(Helicopter& hh) {
+    hh.goLand();
+    int altitude = hh.getYPos();
+
+    if (altitude < 0) {
+        cout << "We crashed!!!\n";
+    }
+    else {
+        cout << "Great landing!!!\n";
+    }
+}

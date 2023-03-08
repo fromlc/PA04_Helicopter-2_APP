@@ -1,0 +1,28 @@
+//------------------------------------------------------------------------------
+// Helicopter.h : class declaration
+//------------------------------------------------------------------------------
+#ifndef HELICOPTER_H
+#define HELICOPTER_H
+
+//------------------------------------------------------------------------------
+// Helicopter
+//------------------------------------------------------------------------------
+class Helicopter {
+private:
+	int xPos;
+	int yPos;
+
+public:
+	Helicopter();
+
+	void goUp(int);					// sets yPos
+	void goDown(int);				// sets yPos
+	void goForward(int);
+
+	void getPos(int&, int&);
+	int getXPos();
+	int getYPos();
+
+	void goLand();					// resets yPos to 0
+};
+#endif // HELICOPTER_H
