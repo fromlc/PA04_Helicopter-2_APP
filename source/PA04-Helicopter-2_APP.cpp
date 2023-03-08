@@ -29,11 +29,11 @@ constexpr int DISTANCE_GAIN = 100;
 constexpr int BUMPY_LANDING = -3;
 
 const string APP_MENU = "U)p, D)own, F)orward, X)lands, Q)uit ? ";
-constexpr char CMD_UP       = 'U';
-constexpr char CMD_DOWN     = 'D';
-constexpr char CMD_FORWARD  = 'F';
-constexpr char CMD_LAND     = 'X';
-constexpr char CMD_QUIT     = 'Q';
+constexpr char CMD_UP = 'U';
+constexpr char CMD_DOWN = 'D';
+constexpr char CMD_FORWARD = 'F';
+constexpr char CMD_LAND = 'X';
+constexpr char CMD_QUIT = 'Q';
 
 //------------------------------------------------------------------------------
 // globals
@@ -58,6 +58,7 @@ void heloLand();
 void quitFlight();
 void displayStatus();
 bool heloCrashed(int);
+int setPilotThrottle();
 
 //------------------------------------------------------------------------------
 // entry point
@@ -147,8 +148,32 @@ void heloForward() {
         cout << "You're still on the ground. ";
     }
     else {
+        if (setPilotThrottle() < GAUGE_LOW) {
+            cout << "You're low on fuel! Land and re-fuel. ";
+        }
         flight::helo.goForward(DISTANCE_GAIN);
     }
+}
+
+//------------------------------------------------------------------------------
+// - puts user command in reference param
+// - returns false on quit command, true otherwise
+//------------------------------------------------------------------------------
+int setPilotThrottle() {
+    do {
+        cout << "\nS)low, M)edium, F)ast ? ";
+
+        char cmd;
+        cin >> cmd;
+
+        switch (toupper(cmd)) {
+        case 'S': return flight::helo.setThrottle(SPEED_SLOW);
+        case 'M': return flight::helo.setThrottle(SPEED_MEDIUM);
+        case 'F': return flight::helo.setThrottle(SPEED_FAST);
+        }
+
+    } while (true);
+
 }
 
 //------------------------------------------------------------------------------
@@ -168,7 +193,7 @@ void heloLand() {
 //------------------------------------------------------------------------------
 void quitFlight() {
     int altitude = flight::helo.getAltitude();
- 
+
     int drop = altitude / ALTITUDE_GAIN * ALTITUDE_DROP;
     flight::helo.goDown(drop);
 
@@ -192,7 +217,9 @@ void displayStatus() {
             cout << "Altitude: " << altitude << " feet,";
         }
     }
-    cout << " distance flown: " << distance << " yards.\n\n";
+    cout << " distance flown: " << distance << " yards.\n";
+    cout << "Cruising speed: " << flight::helo.getMph() << "mph\n";
+    cout << "Fuel left: " << flight::helo.getFuelLeft() << "\n\n";
 }
 
 //------------------------------------------------------------------------------

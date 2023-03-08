@@ -61,3 +61,31 @@ int Helicopter::goForward(int incDistance) {
 // resets altitude to 0
 //------------------------------------------------------------------------------
 void Helicopter::goLand() { altitude = 0; }
+
+//------------------------------------------------------------------------------
+// - sets enumerated speed
+// - returns fuel left
+//------------------------------------------------------------------------------
+int Helicopter::setThrottle(speedSelect speed) {
+	return _setThrottle(speed);
+}
+
+//------------------------------------------------------------------------------
+// - private
+// - sets enumerated speed
+// - returns fuel left
+//------------------------------------------------------------------------------
+int Helicopter::_setThrottle(speedSelect speed) {
+	return stick.setThrottle(speed, fg, speedo);
+}
+
+//------------------------------------------------------------------------------
+// returns cruising speed in mph
+//------------------------------------------------------------------------------
+int Helicopter::getMph() const { return speedo.getMph(); }
+
+//------------------------------------------------------------------------------
+// returns fuel left
+//------------------------------------------------------------------------------
+int Helicopter::getFuelLeft() const { return fg.getFuelGauge(); }
+

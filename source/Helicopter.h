@@ -4,6 +4,10 @@
 #ifndef HELICOPTER_H
 #define HELICOPTER_H
 
+#include "Throttle.h"
+#include "FuelGauge.h"
+#include "Speedometer.h"
+
 //------------------------------------------------------------------------------
 // Helicopter
 //------------------------------------------------------------------------------
@@ -11,6 +15,9 @@ class Helicopter {
 private:
 	int altitude;
 	int distance;
+	Throttle stick;
+	FuelGauge fg;
+	Speedometer speedo;
 
 public:
 	// constructor
@@ -32,5 +39,14 @@ public:
 	
 	// resets altitude to 0
 	void goLand();
+
+	// control enumerated speed
+	int setThrottle(speedSelect);
+	// get cruising speed in mph
+	int getMph() const;
+	int getFuelLeft() const;
+
+private: 
+	int _setThrottle(speedSelect);
 };
 #endif // HELICOPTER_H
