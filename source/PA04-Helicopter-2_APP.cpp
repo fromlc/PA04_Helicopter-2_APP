@@ -121,17 +121,17 @@ void doHeloCommand(char cmd) {
 //------------------------------------------------------------------------------
 // goes up
 //------------------------------------------------------------------------------
-void heloUp() {
-    flight::helo.goUp(ALTITUDE_GAIN);
-}
+void heloUp() { flight::helo.goUp(ALTITUDE_GAIN); }
 
 //------------------------------------------------------------------------------
 // goes down
 //------------------------------------------------------------------------------
 void heloDown() {
+
     if (!flight::helo.getAltitude()) {
         cout << "You're already on the ground! ";
     }
+
     flight::helo.goDown(ALTITUDE_DROP);
 }
 
