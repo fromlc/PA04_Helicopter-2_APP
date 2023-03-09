@@ -53,7 +53,7 @@ int Helicopter::goDown(int decAltitude) {
 // - returns distance flown so far
 //------------------------------------------------------------------------------
 int Helicopter::goForward(int incDistance) {
-	distance += abs(incDistance);
+	distance += abs(incDistance) * stick.getThrottle();
 	return distance;
 }
 

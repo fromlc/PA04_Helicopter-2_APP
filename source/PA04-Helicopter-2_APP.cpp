@@ -214,12 +214,12 @@ void displayStatus() {
             flight::leftGround = false;
         }
         else {
-            cout << "Altitude: " << altitude << " feet,";
+            cout << "Altitude " << altitude << " feet,";
         }
     }
-    cout << " distance flown: " << distance << " yards.\n";
-    cout << "Cruising speed: " << flight::helo.getMph() << "mph, ";
-    cout << "fuel left: " << flight::helo.getFuelLeft() << "gal\n\n";
+    cout << " distance flown " << distance << " yards.\n";
+    cout << "Cruising speed " << flight::helo.getMph() << "mph, ";
+    cout << "fuel left " << flight::helo.getFuelLeft() << "gal\n\n";
 }
 
 //------------------------------------------------------------------------------
