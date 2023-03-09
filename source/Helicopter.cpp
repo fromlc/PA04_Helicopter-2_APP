@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 // constructor
 //------------------------------------------------------------------------------
-Helicopter::Helicopter() : altitude(0), distance(0), crash(false) { }
+Helicopter::Helicopter() : altitude(0), distance(0), status(HELO_ONGROUND) { }
 
 //------------------------------------------------------------------------------
 // returns current altitude
@@ -23,9 +23,20 @@ int Helicopter::getDistance() const { return distance; }
 //------------------------------------------------------------------------------
 // puts altitude and distance in reference parameters
 //------------------------------------------------------------------------------
-void Helicopter::getPosition(int& _altitude, int& _distance) {
+HeloStatus Helicopter::getPosition(int& _altitude, int& _distance) {
 	_altitude = altitude;
 	_distance = distance;
+
+	if (altitude > 0)
+		status = HELO_INAIR;
+	else if (altitude < HELO_HARDLANDING_LIMIT)
+		status = HELO_CRASHED;
+	else if (altitude < 0)
+		status = HELO_HARDLANDING;
+	else if (altitude == 0)
+		status = HELO_ONGROUND;
+
+	return status;
 }
 
 //------------------------------------------------------------------------------
@@ -34,8 +45,11 @@ void Helicopter::getPosition(int& _altitude, int& _distance) {
 // - returns current altitude 
 //------------------------------------------------------------------------------
 int Helicopter::goUp(int incAltitude) {
-	altitude += abs(incAltitude);
 	fg.useFuel(USEFUEL_MEDIUM);
+
+	status = HELO_INAIR;
+
+	altitude += abs(incAltitude);
 	return altitude;
 }
 
@@ -49,6 +63,18 @@ int Helicopter::goDown(int decAltitude) {
 		altitude -= abs(decAltitude);
 		fg.useFuel(USEFUEL_SLOW);
 	}
+	if (altitude < 0) {
+		if (altitude < HELO_HARDLANDING_LIMIT) {
+			status = HELO_CRASHED;
+		}
+		else {
+			status = HELO_HARDLANDING;
+		}
+	}
+	else {
+		status = HELO_INAIR;
+	}
+
 	return altitude;
 }
 
@@ -64,7 +90,10 @@ int Helicopter::goForward(int incDistance) {
 //------------------------------------------------------------------------------
 // resets altitude to 0
 //------------------------------------------------------------------------------
-void Helicopter::goLand() { altitude = 0; }
+void Helicopter::goLand() {
+	altitude = 0;
+	status = HELO_ONGROUND;
+}
 
 //------------------------------------------------------------------------------
 // - sets enumerated speed
@@ -94,10 +123,6 @@ int Helicopter::getMph() const { return speedo.getMph(); }
 int Helicopter::getFuelLeft() const { return fg.getFuelGauge(); }
 
 //------------------------------------------------------------------------------
-// app sets/clears crash flag 
+// returns enumerated flight status
 //------------------------------------------------------------------------------
-bool Helicopter::crashed() const { return crash; }
-
-void Helicopter::setCrashFlag() { crash = true; }
-
-void Helicopter::clearCrashFlag() { crash = false; }
+HeloStatus Helicopter::getStatus() const { return status; }

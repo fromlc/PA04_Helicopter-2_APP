@@ -9,13 +9,23 @@
 #include "Speedometer.h"
 
 //------------------------------------------------------------------------------
+// constants
+//------------------------------------------------------------------------------
+constexpr int HELO_HARDLANDING_LIMIT = -3;
+
+//------------------------------------------------------------------------------
+// enum for helicopter status
+//------------------------------------------------------------------------------
+enum HeloStatus { HELO_ONGROUND, HELO_INAIR, HELO_HARDLANDING, HELO_CRASHED };
+
+//------------------------------------------------------------------------------
 // Helicopter
 //------------------------------------------------------------------------------
 class Helicopter {
 private:
 	int altitude;
 	int distance;
-	bool crash;
+	HeloStatus status;
 	Throttle stick;
 	FuelGauge fg;
 	Speedometer speedo;
@@ -29,7 +39,7 @@ public:
 	// returns distance flown so far
 	int getDistance() const;
 	// puts altitude and distance in reference params
-	void getPosition(int&, int&);
+	HeloStatus getPosition(int&, int&);
 
 	// increases altitude by absolute passed value, returns current altitude
 	int goUp(int);
@@ -47,10 +57,8 @@ public:
 	int getMph() const;
 	// get remaining fuel units
 	int getFuelLeft() const;
-	// app sets/clears crash flag 
-	bool crashed() const;
-	void setCrashFlag();
-	void clearCrashFlag();
+	// get enumerated flight status
+	HeloStatus getStatus() const;
 
 private: 
 	int _setThrottle(speedSelect);

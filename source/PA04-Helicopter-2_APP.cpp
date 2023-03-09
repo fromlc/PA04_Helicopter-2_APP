@@ -26,7 +26,6 @@ using std::string;
 constexpr int ALTITUDE_GAIN = 100;
 constexpr int ALTITUDE_DROP = 101;
 constexpr int DISTANCE_GAIN = 100;
-constexpr int BUMPY_LANDING = -3;
 
 const string APP_MENU = "U)p, D)own, F)orward, X)lands, Q)uit ? ";
 constexpr char CMD_UP = 'U';
@@ -40,7 +39,6 @@ constexpr char CMD_QUIT = 'Q';
 //------------------------------------------------------------------------------
 namespace flight {
     Helicopter helo;
-    bool leftGround = false;
     bool quit = false;
 }
 
@@ -56,7 +54,6 @@ void heloForward();
 void heloLand();
 void quitFlight();
 void displayStatus();
-bool heloCrashed(int);
 int setPilotThrottle();
 
 //------------------------------------------------------------------------------
@@ -69,7 +66,7 @@ int main() {
         char cmd = getPilotCommand();
         doHeloCommand(cmd);
         displayStatus();
-    } while (!flight::helo.crashed() && !flight::quit);
+    } while (flight::helo.getStatus() != HELO_CRASHED && !flight::quit);
 
     cout << "\nGoodbye!\n\n";
 }
@@ -134,7 +131,6 @@ void heloUp() {
 void heloDown() {
     if (!flight::helo.getAltitude()) {
         cout << "You're already on the ground! ";
-        flight::leftGround = false;
     }
     flight::helo.goDown(ALTITUDE_DROP);
 }
@@ -184,7 +180,6 @@ void heloLand() {
     }
     else {
         cout << "Nice landing!\n";
-        flight::leftGround = false;
         flight::helo.goLand();
     }
 }
@@ -205,43 +200,24 @@ void quitFlight() {
 // displays helicopter status and position 
 //------------------------------------------------------------------------------
 void displayStatus() {
+
+    // reference parameters
     int altitude, distance;
-    flight::helo.getPosition(altitude, distance);
+    HeloStatus status = flight::helo.getPosition(altitude, distance);
 
-    if (!heloCrashed(altitude)) {
-        altitude = flight::helo.getAltitude();
-        if (flight::leftGround && !altitude) {
-            cout << "Nice landing ;)";
-            flight::leftGround = false;
-        }
-        else {
-            cout << "Altitude " << altitude << " feet\n";
-        }
+    if (status == HELO_HARDLANDING) {
+        cout << "Bumpy landing - you only missed by " 
+            << abs(altitude) << " feet\n";
+        flight::helo.goLand();
     }
+    else if (status == HELO_ONGROUND) {
+        cout << "Helo on the ground\n";
+    }
+    else if (status == HELO_INAIR) {
+        cout << "Altitude " << altitude << " feet\n";
+        cout << "Cruising speed " << flight::helo.getMph() << " mph\n";
+    }
+
     cout << "Distance flown " << distance << " yards\n";
-    cout << "Cruising speed " << flight::helo.getMph() << " mph\n";
     cout << "Fuel left " << flight::helo.getFuelLeft() << " gallons\n\n";
-}
-
-//------------------------------------------------------------------------------
-// - handles crash conditions
-// - updates helo altitude
-// - returns true if helo crashed, false otherwise
-//------------------------------------------------------------------------------
-bool heloCrashed(int altitude) {
-
-    if (altitude < 0) {
-        if (altitude >= BUMPY_LANDING) {
-            cout << "Bumpy landing! ";
-            flight::helo.goLand();
-            //flight::crashed = false;
-        }
-        else {
-            cout << "You crashed! ";
-            flight::helo.setCrashFlag();
-        }
-
-        cout << "You dropped " << abs(altitude) << " feet too many.\n";
-    }
-    return flight::helo.crashed();
 }
