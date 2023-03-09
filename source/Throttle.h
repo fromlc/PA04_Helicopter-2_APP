@@ -7,17 +7,6 @@
 #include "Speedometer.h"
 
 //------------------------------------------------------------------------------
-// constants
-//------------------------------------------------------------------------------
-constexpr int FUEL_ZERO = 0;
-constexpr int FUEL_SLOW = 1;
-constexpr int FUEL_MEDIUM = 3;
-constexpr int FUEL_FAST = 5;
-
-constexpr int USE_OK = 1;
-constexpr int USE_INVALID = 1;
-
-//------------------------------------------------------------------------------
 // Throttle : controls FuelGauge and Speedometer
 //------------------------------------------------------------------------------
 class Throttle {
@@ -26,7 +15,7 @@ private:
     int setting;
 
 public:
-    Throttle() : speed(SPEED_ZERO), setting(FUEL_ZERO) { }
+    Throttle() : speed(SPEED_ZERO), setting(USEFUEL_ZERO) { }
 
     int getThrottle() const { return (int)setting; }
 
@@ -36,20 +25,20 @@ public:
         switch (_speed) {
         case SPEED_SLOW:
             speed = SPEED_SLOW;
-            setting = FUEL_SLOW;
+            setting = USEFUEL_SLOW;
             break;
         case SPEED_MEDIUM:
             speed = SPEED_MEDIUM;
-            setting = FUEL_MEDIUM;
+            setting = USEFUEL_MEDIUM;
             break;
         case SPEED_FAST:
             speed = SPEED_FAST;
-            setting = FUEL_FAST;
+            setting = USEFUEL_FAST;
             break;
         case SPEED_ZERO:
         default:
             speed = SPEED_ZERO;
-            setting = FUEL_ZERO;
+            setting = USEFUEL_ZERO;
         }
 
         // set speedometer display value
