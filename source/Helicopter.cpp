@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 // constructor
 //------------------------------------------------------------------------------
-Helicopter::Helicopter() : altitude(0), distance(0), crashStatus(false) { }
+Helicopter::Helicopter() : altitude(0), distance(0), crash(false) { }
 
 //------------------------------------------------------------------------------
 // returns current altitude
@@ -99,4 +99,5 @@ int Helicopter::getFuelLeft() const { return fg.getFuelGauge(); }
 bool Helicopter::crashed() const { return crash; }
 
 void Helicopter::setCrashFlag() { crash = true; }
+
 void Helicopter::clearCrashFlag() { crash = false; }
