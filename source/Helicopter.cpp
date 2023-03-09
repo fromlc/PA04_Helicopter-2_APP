@@ -30,20 +30,24 @@ void Helicopter::getPosition(int& _altitude, int& _distance) {
 
 //------------------------------------------------------------------------------
 // - increases altitude by absolute passed value
+// - uses fuel amount for medium speed
 // - returns current altitude 
 //------------------------------------------------------------------------------
 int Helicopter::goUp(int incAltitude) {
 	altitude += abs(incAltitude);
+	fg.useFuel(USEFUEL_MEDIUM);
 	return altitude;
 }
 
 //------------------------------------------------------------------------------
 // - decreases altitude by absolute passed value
+// - uses fuel amount for slow speed
 // - returns current altitude 
 //------------------------------------------------------------------------------
 int Helicopter::goDown(int decAltitude) {
 	if (altitude) {
 		altitude -= abs(decAltitude);
+		fg.useFuel(USEFUEL_SLOW);
 	}
 	return altitude;
 }
