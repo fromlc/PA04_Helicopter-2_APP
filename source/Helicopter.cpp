@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 // constructor
 //------------------------------------------------------------------------------
-Helicopter::Helicopter() { altitude = distance = 0; }
+Helicopter::Helicopter() : altitude(0), distance(0), crashStatus(false) { }
 
 //------------------------------------------------------------------------------
 // returns current altitude
@@ -93,3 +93,10 @@ int Helicopter::getMph() const { return speedo.getMph(); }
 //------------------------------------------------------------------------------
 int Helicopter::getFuelLeft() const { return fg.getFuelGauge(); }
 
+//------------------------------------------------------------------------------
+// app sets/clears crash flag 
+//------------------------------------------------------------------------------
+bool Helicopter::crashed() const { return crash; }
+
+void Helicopter::setCrashFlag() { crash = true; }
+void Helicopter::clearCrashFlag() { crash = false; }

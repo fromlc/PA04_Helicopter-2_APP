@@ -15,6 +15,7 @@ class Helicopter {
 private:
 	int altitude;
 	int distance;
+	bool crash;
 	Throttle stick;
 	FuelGauge fg;
 	Speedometer speedo;
@@ -44,7 +45,12 @@ public:
 	int setThrottle(speedSelect);
 	// get cruising speed in mph
 	int getMph() const;
+	// get remaining fuel units
 	int getFuelLeft() const;
+	// app sets/clears crash flag 
+	bool crashed() const;
+	void setCrashFlag();
+	void clearCrashFlag();
 
 private: 
 	int _setThrottle(speedSelect);
