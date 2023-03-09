@@ -92,7 +92,7 @@ void initFlight() {
     cout << "If you drop too much altitude or Q)uit in midair, ";
     cout << "your Huey may crash!\n\n";
 
-    cout << "Starting simulation. ";
+    cout << "Starting flight simulation.\n\n";
     displayStatus();
 }
 
@@ -161,7 +161,7 @@ void heloForward() {
 //------------------------------------------------------------------------------
 int setPilotThrottle() {
     do {
-        cout << "\nS)low, M)edium, F)ast ? ";
+        cout << "S)low, M)edium, F)ast ? ";
 
         char cmd;
         cin >> cmd;
@@ -218,8 +218,8 @@ void displayStatus() {
         }
     }
     cout << " distance flown: " << distance << " yards.\n";
-    cout << "Cruising speed: " << flight::helo.getMph() << "mph\n";
-    cout << "Fuel left: " << flight::helo.getFuelLeft() << "\n\n";
+    cout << "Cruising speed: " << flight::helo.getMph() << "mph, ";
+    cout << "fuel left: " << flight::helo.getFuelLeft() << "gal\n\n";
 }
 
 //------------------------------------------------------------------------------

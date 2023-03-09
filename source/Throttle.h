@@ -9,6 +9,7 @@
 //------------------------------------------------------------------------------
 // constants
 //------------------------------------------------------------------------------
+constexpr int FUEL_ZERO = 0;
 constexpr int FUEL_SLOW = 1;
 constexpr int FUEL_MEDIUM = 3;
 constexpr int FUEL_FAST = 5;
@@ -28,21 +29,29 @@ public:
 
     int setThrottle(speedSelect _speed, FuelGauge& fg, Speedometer& spdom) {
 
+        int fuelUsed = 0;
+
         // speed determines fuel use
         switch (_speed) {
-        case SPEED_ZERO:
-            speed = SPEED_ZERO;
-            return true;
         case SPEED_SLOW:
-            return fg.useFuel((speed = SPEED_SLOW));
+            speed = SPEED_SLOW;
+            fuelUsed = FUEL_SLOW;
+            break;
         case SPEED_MEDIUM:
-            return fg.useFuel((speed = SPEED_MEDIUM));
+            speed = SPEED_MEDIUM;
+            fuelUsed = FUEL_MEDIUM;
+            break;
         case SPEED_FAST:
-            return fg.useFuel((speed = SPEED_FAST));
-        default: 
-            return fg.getFuelGauge();
+            speed = SPEED_FAST;
+            fuelUsed = FUEL_FAST;
+            break;
+        case SPEED_ZERO:
+        default:
+            speed = SPEED_ZERO;
+            fuelUsed = FUEL_ZERO;
         }
 
+        return fg.useFuel(fuelUsed);
         // set speedometer display value
         spdom.setMph(speed);
 
