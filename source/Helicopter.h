@@ -47,10 +47,13 @@ public:
 	int goDown(int);
 	// increases distance by absolute passed value, returns distance flown so far
 	int goForward(int);
-	
 	// resets altitude to 0
 	void goLand();
+	// set status to crash
+	void goCrash();
 
+	// fills fuel tank to capacity, returns units of fuel put in tank
+	int fillFuelTank();
 	// control enumerated speed
 	int setThrottle(speedSelect);
 	// get cruising speed in mph

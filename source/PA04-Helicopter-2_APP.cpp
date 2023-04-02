@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// PA02-Helicopter-1.cpp : app code for helicopter flight
+// PA04-Helicopter-2_APP.cpp : app code for helicopter flight
 // 
 // Accepts commands U)p, D)own, F)orward, X)lands, Q)uit
 //      - Up increases altitude by 100 feet
@@ -27,11 +27,12 @@ constexpr int ALTITUDE_GAIN = 100;
 constexpr int ALTITUDE_DROP = 101;
 constexpr int DISTANCE_GAIN = 100;
 
-const string APP_MENU = "U)p, D)own, F)orward, X)lands, Q)uit ? ";
+const string APP_MENU = "U)p, D)own, F)orward, X)lands, R)efuel, Q)uit ? ";
 constexpr char CMD_UP = 'U';
 constexpr char CMD_DOWN = 'D';
 constexpr char CMD_FORWARD = 'F';
 constexpr char CMD_LAND = 'X';
+constexpr char CMD_REFUEL = 'R';
 constexpr char CMD_QUIT = 'Q';
 
 //------------------------------------------------------------------------------
@@ -52,6 +53,7 @@ void heloUp();
 void heloDown();
 void heloForward();
 void heloLand();
+void heloRefuel();
 void quitFlight();
 void displayStatus();
 int setPilotThrottle();
@@ -60,6 +62,7 @@ int setPilotThrottle();
 // entry point
 //------------------------------------------------------------------------------
 int main() {
+
     initFlight();
 
     do {
@@ -97,7 +100,7 @@ void initFlight() {
 // - returns false on quit command, true otherwise
 //------------------------------------------------------------------------------
 char getPilotCommand() {
-    cout << "U)p, D)own, F)orward, X)lands, Q)uit ? ";
+    cout << "U)p, D)own, F)orward, X)lands, R)efuel, Q)uit ? ";
 
     char cmd;
     cin >> cmd;
@@ -109,11 +112,13 @@ char getPilotCommand() {
 // - returns command result: true on success, false on fail
 //------------------------------------------------------------------------------
 void doHeloCommand(char cmd) {
+
     switch (cmd) {
     case CMD_UP:        heloUp(); break;
     case CMD_DOWN:      heloDown(); break;
     case CMD_FORWARD:   heloForward(); break;
     case CMD_LAND:      heloLand(); break;
+    case CMD_REFUEL:    heloRefuel(); break;
     case CMD_QUIT:      quitFlight(); break;
     }
 }
@@ -139,14 +144,49 @@ void heloDown() {
 // goes forward
 //------------------------------------------------------------------------------
 void heloForward() {
-    if (!flight::helo.getAltitude()) {
-        cout << "You're still on the ground.\n";
+
+    if (flight::helo.getAltitude() > 0) {
+
+        int fuelLeft = setPilotThrottle();
+
+        if (fuelLeft <= GAUGE_EMPTY) {
+            cout << "You're out of fuel!\n";
+            flight::helo.goCrash();
+            return;
+        }
+
+        if (fuelLeft <= GAUGE_RESERVE) {
+            cout << "You're very low on fuel! Land and re-fuel!\n";
+        }
+        else if (fuelLeft <= GAUGE_LOW) {
+            cout << "You're low on fuel. Land and re-fuel soon!\n";
+        }
+
+        flight::helo.goForward(DISTANCE_GAIN);
+    }
+}
+
+//------------------------------------------------------------------------------
+// lands
+//------------------------------------------------------------------------------
+void heloLand() {
+
+    // land anyway to clear possible hard landing status
+    flight::helo.goLand();
+}
+
+//------------------------------------------------------------------------------
+// refills tank if helo is on ground
+//------------------------------------------------------------------------------
+void heloRefuel() {
+
+    if (flight::helo.getStatus() == HELO_ONGROUND) {
+        cout << "Your helo's " << GAUGE_FULL << " gallon fuel tank took "
+            << flight::helo.fillFuelTank()
+            << " gallons to fill. You're good to go!\n";
     }
     else {
-        if (setPilotThrottle() < GAUGE_LOW) {
-            cout << "You're low on fuel! Land and re-fuel soon.\n";
-        }
-        flight::helo.goForward(DISTANCE_GAIN);
+        cout << "You have to land before refueling.\n";
     }
 }
 
@@ -155,6 +195,7 @@ void heloForward() {
 // - returns false on quit command, true otherwise
 //------------------------------------------------------------------------------
 int setPilotThrottle() {
+
     do {
         cout << "S)low, M)edium, F)ast ? ";
 
@@ -169,19 +210,6 @@ int setPilotThrottle() {
 
     } while (true);
 
-}
-
-//------------------------------------------------------------------------------
-// lands
-//------------------------------------------------------------------------------
-void heloLand() {
-    if (!flight::helo.getAltitude()) {
-        cout << "You're already on the ground!\n";
-    }
-    else {
-        cout << "Nice landing!\n";
-        flight::helo.goLand();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -205,8 +233,11 @@ void displayStatus() {
     int altitude, distance;
     HeloStatus status = flight::helo.getPosition(altitude, distance);
 
-    if (status == HELO_HARDLANDING) {
-        cout << "Bumpy landing - you only missed by " 
+    if (status == HELO_CRASHED) {
+        cout << "You ran out of fuel and crashed!\n";
+    }
+    else if (status == HELO_HARDLANDING) {
+        cout << "Bumpy landing - you only missed by "
             << abs(altitude) << " feet\n";
         flight::helo.goLand();
     }

@@ -27,6 +27,11 @@ HeloStatus Helicopter::getPosition(int& _altitude, int& _distance) {
 	_altitude = altitude;
 	_distance = distance;
 
+	// Helo already crashed for another reason
+	if (status == HELO_CRASHED) {
+		return HELO_CRASHED;
+	}
+
 	if (altitude > 0)
 		status = HELO_INAIR;
 	else if (altitude < HELO_HARDLANDING_LIMIT)
@@ -96,6 +101,21 @@ void Helicopter::goLand() {
 }
 
 //------------------------------------------------------------------------------
+// crash the copter
+//------------------------------------------------------------------------------
+void Helicopter::goCrash() {
+	altitude = 0;
+	status = HELO_CRASHED;
+}
+
+//------------------------------------------------------------------------------
+// fills fuel tank to capacity, returns units of fuel put in tank
+//------------------------------------------------------------------------------
+int Helicopter::fillFuelTank() {
+	return fg.fillFuelTank();
+}
+
+//------------------------------------------------------------------------------
 // - sets enumerated speed
 // - returns fuel left
 //------------------------------------------------------------------------------
@@ -126,3 +146,4 @@ int Helicopter::getFuelLeft() const { return fg.getFuelGauge(); }
 // returns enumerated flight status
 //------------------------------------------------------------------------------
 HeloStatus Helicopter::getStatus() const { return status; }
+

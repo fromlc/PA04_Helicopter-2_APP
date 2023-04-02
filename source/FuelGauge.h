@@ -11,8 +11,10 @@ using std::max;
 //------------------------------------------------------------------------------
 // constants
 //------------------------------------------------------------------------------
-constexpr int GAUGE_FULL = 100;     // tank capacity
-constexpr int GAUGE_LOW = 15;       // switch to reserve tank
+constexpr int GAUGE_FULL = 10;      // tank capacity
+constexpr int GAUGE_LOW = 15;       // report low fuel
+constexpr int GAUGE_RESERVE = 5;    // switch to reserve tank
+constexpr int GAUGE_EMPTY = 0;      // crash
 
 constexpr int USEFUEL_ZERO = 0;
 constexpr int USEFUEL_SLOW = 1;
@@ -43,6 +45,15 @@ public:
         fuelLeft -= fuel;
         fuelLeft = max(0, fuelLeft);
         return fuelLeft;
+    }
+
+    //--------------------------------------------------------------------------
+    // fills fuel tank to capacity, returns units of fuel put in tank
+    //--------------------------------------------------------------------------
+    int fillFuelTank() {
+        int tookFuel = GAUGE_FULL - fuelLeft;
+        fuelLeft = GAUGE_FULL;
+        return tookFuel;
     }
 };
 
