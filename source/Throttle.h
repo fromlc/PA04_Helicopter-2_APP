@@ -15,10 +15,15 @@ private:
     int setting;
 
 public:
+    // constructor
     Throttle() : speed(SPEED_ZERO), setting(USEFUEL_ZERO) { }
 
     int getThrottle() const { return (int)setting; }
 
+    //--------------------------------------------------------------------------
+    // - sets Throttle, FuelGauge, and Speedometer from passed speed
+    // - returns max of 0 and fuel amount left
+    //--------------------------------------------------------------------------
     int setThrottle(speedSelect _speed, FuelGauge& fg, Speedometer& spdom) {
 
         // speed determines fuel use
@@ -45,7 +50,6 @@ public:
         spdom.setMph(speed);
 
         return fg.useFuel(setting);
-
     }
 };
 

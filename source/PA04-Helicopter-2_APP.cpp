@@ -96,8 +96,7 @@ void initFlight() {
 }
 
 //------------------------------------------------------------------------------
-// - puts user command in reference param
-// - returns false on quit command, true otherwise
+// returns user command in upper case
 //------------------------------------------------------------------------------
 char getPilotCommand() {
     cout << "U)p, D)own, F)orward, X)lands, R)efuel, Q)uit ? ";
@@ -108,8 +107,7 @@ char getPilotCommand() {
 }
 
 //------------------------------------------------------------------------------
-// - executes passed command
-// - returns command result: true on success, false on fail
+// executes passed command
 //------------------------------------------------------------------------------
 void doHeloCommand(char cmd) {
 
@@ -191,7 +189,7 @@ void heloRefuel() {
 }
 
 //------------------------------------------------------------------------------
-// - puts user command in reference param
+// - gets user speed command
 // - returns false on quit command, true otherwise
 //------------------------------------------------------------------------------
 int setPilotThrottle() {
